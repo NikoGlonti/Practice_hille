@@ -1,0 +1,39 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Post title: {{ post.title }}</h1>
+<style>
+.raz div {
+  min-height: 2em;
+  margin-right: 0em;
+  border: 1px solid black;
+  background: #e6e6fa;
+}
+</style>
+
+  <p><strong>Author:</strong> {{ post.author }}</p>
+  <p><strong>Brief description:</strong> {{ post.brief_description }}</p>
+  {% if post.image %}
+       <img style="width: 200px; height: 250px;" src="{{ post.image.url }}" alt="#">
+    {% endif %}
+  <p><strong>Full description:</strong> {{ post.full_description }}</p>
+<p>
+<div>
+
+        {% for comment in object.comment_set.all %}
+             {% if comment.posted_com == True %}
+        <ul>
+                        <div><p><strong>Comments:</strong>
+                        <p>{{ comment.username }} {{ comment.text }}</p>
+        </ul>
+                  {% else%}
+                 <div><p><strong>No Comments</strong>
+            {% endif %}
+        {% endfor %}
+  <li class="nav-item">
+                <a class="btn btn-outline-dark" href="{% url 'create-comment' post.pk %}?blog_id={{ post.id }}">Make comments</a>
+            </li>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Blog</h1>
+
+
+  <p>The library has the following record counts:</p>
+  <ul>
+    <li><strong>Posts:</strong> {{ num_posts }}</li>
+    <li><strong>Comments:</strong> {{ num_comments }}</li>
+  </ul>
+
+    <p>You have visited this page {{ num_visits }}{% if num_visits == 1 %} time{% else %} times{% endif %}.</p>
+
+{% endblock %}
