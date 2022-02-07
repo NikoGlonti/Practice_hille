@@ -5,7 +5,9 @@ from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
 from django.views import generic
+from django.views.decorators.cache import cache_page
 from django.views.generic.list import MultipleObjectMixin
 
 from .forms import CommentCreate, PostCreate, RegisterForm, ContactUsForm
@@ -60,6 +62,7 @@ class PostListView(generic.ListView):
     template_name = 'post_list.html'
 
 
+@method_decorator(cache_page(30), name='dispatch')
 class PostDetailView(generic.DetailView):
     model = Post
     template_name = 'post_detail.html'
@@ -75,6 +78,13 @@ class CreatePost(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
         post = form.save(commit=False)
         post.author = self.request.user
         post.save()
+        send_mail(
+            'Post',
+            'Create new post',
+            'nik@example.com',
+            ['admin@example.com'],
+            fail_silently=False,
+        )
 
         return super(CreatePost, self).form_valid(form)
 
@@ -136,19 +146,23 @@ class CommentCreateView(SuccessMessageMixin, generic.CreateView):
         }
 
     def form_valid(self, form):
-        comment = form.save()
-        # message.delay(
-        #     comment=comment.id,
-        #     blogger=None,
-        # )
+        send_mail(
+            'Comment',
+            'Create new comment',
+            'nik@example.com',
+            ['admin@example.com'],
+            fail_silently=False,
+        )
         return super(CommentCreateView, self).form_valid(form)
 
 
+@method_decorator(cache_page(30), name='dispatch')
 class ProfileInfo(generic.DetailView):
     model = User
     template_name = "profile_info.html"
 
 
+@method_decorator(cache_page(30), name='dispatch')
 class ProfileList(generic.ListView):
     queryset = User.objects.all()
     template_name = "profile_list.html"
@@ -157,7 +171,7 @@ class ProfileList(generic.ListView):
 class MessageAdmin(SuccessMessageMixin, generic.FormView):
     form_class = ContactUsForm
     success_message = 'Message send'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('index')
     template_name = 'contact_us.html'
 
     def form_valid(self, form):
@@ -169,4 +183,3 @@ class MessageAdmin(SuccessMessageMixin, generic.FormView):
                   fail_silently=False,
                   )
         return super(MessageAdmin, self).form_valid(form)
-
