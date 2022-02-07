@@ -46,7 +46,7 @@ class RegisterFormView(generic.FormView):
 class UserEditView(LoginRequiredMixin, generic.UpdateView):
     model = User
     fields = ["username", "first_name", "last_name", "email"]
-    template_name = 'registration/update_user.html'
+    template_name = 'update_user.html'
     success_url = reverse_lazy('index')
 
     def get_object(self, queryset=None):

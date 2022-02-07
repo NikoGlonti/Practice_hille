@@ -13,4 +13,5 @@ urlpatterns = [
     path('profiles/<int:pk>/', views.ProfileInfo.as_view(), name='user-detail'),
     path('profiles/', views.ProfileList.as_view(), name='profile-list'),
     path('contact/', views.MessageAdmin.as_view(), name='message-admin'),
+    path('profiles/<int:pk>/update/', views.UserEditView.as_view(), name='user-update'),
 ]
