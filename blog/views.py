@@ -1,16 +1,14 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.decorators.cache import cache_page
-from django.views.generic.list import MultipleObjectMixin
 
-from .forms import CommentCreate, PostCreate, RegisterForm, ContactUsForm
+from .forms import RegisterForm, ContactUsForm
 from .models import Comment, Post, User
 
 

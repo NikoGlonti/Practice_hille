@@ -24,12 +24,13 @@
 
         <li class="nav-item">
           <a class="nav-link" href="{% url 'posts' %}">All posts</a>
-        </li>
-        {% if user.is_authenticated %}
-
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'profile-list' %}">All Users</a>
             </li>
+        </li>
+        {% if user.is_authenticated %}
+
+
 
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'create-post' %}">Create post</a>
@@ -38,6 +39,7 @@
             <li class="nav-item">
                 <a class="btn btn-outline-dark" href="{% url 'logout' %}">Logout</a>
             </li>
+
 
         {% else %}
 
@@ -99,4 +101,4 @@
 {% endblock %}
 
 </body>
-</html>
+

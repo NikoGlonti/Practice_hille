@@ -21,4 +21,3 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ['username']
     search_fields = ['username']
     ordering = ['posted_com', 'post']
-
