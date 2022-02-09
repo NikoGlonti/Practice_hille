@@ -42,6 +42,9 @@
             <li class="nav-item">
                 <a class="btn btn-outline-dark" href="{% url 'user-update' user.id%}">update</a>
             </li>
+            <li class="nav-item">
+                <a class="btn btn-outline-dark" href="{% url 'password_reset_confirm' user.id%}">change password</a>
+            </li>
 
 
         {% else %}

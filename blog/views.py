@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404
@@ -181,3 +182,11 @@ class MessageAdmin(SuccessMessageMixin, generic.FormView):
                   fail_silently=False,
                   )
         return super(MessageAdmin, self).form_valid(form)
+
+
+class BloggerPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
+    success_message = 'Password successfully changed'
+    template_name = 'registration/password_reset_confirm.html'
+
+    def get_success_url(self):
+        return reverse('index')
