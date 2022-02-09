@@ -155,10 +155,19 @@ class CommentCreateView(SuccessMessageMixin, generic.CreateView):
         return super(CommentCreateView, self).form_valid(form)
 
 
-@method_decorator(cache_page(30), name='dispatch')
+# @method_decorator(cache_page(30), name='dispatch')
 class ProfileInfo(generic.DetailView):
     model = User
     template_name = "profile_info.html"
+
+    def get_context_data(self, **kwargs):
+        if self.request.user == self.get_object():
+            object_list = Post.objects.filter(author=self.get_object())
+            context = super(ProfileInfo, self).get_context_data(object_list=object_list, **kwargs)
+        else:
+            object_list = Post.objects.filter(author=self.get_object())
+            context = super(ProfileInfo, self).get_context_data(object_list=object_list, **kwargs)
+        return context
 
 
 @method_decorator(cache_page(30), name='dispatch')

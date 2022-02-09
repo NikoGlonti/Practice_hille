@@ -8,5 +8,10 @@
         <strong><br>Last Name: {{ user.last_name }}</strong>
 
     </div>
-
+   <h4>Post list</h4>
+      {% for blog in object_list %}
+        <div class="container-sm-2">
+           <h4><a href="{{ blog.get_absolute_url }}">{{ blog.title|title }}</a></h4>
+                {% endfor %}
+            </div>
 {% endblock %}

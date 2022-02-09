@@ -15,4 +15,5 @@ urlpatterns = [
     path('contact/', views.MessageAdmin.as_view(), name='message-admin'),
     path('profiles/<int:pk>/update/', views.UserEditView.as_view(), name='user-update'),
     path('password_reset_confirm/<int:pk>', views.BloggerPasswordChangeView.as_view(), name='password_reset_confirm'),
+    path('profiles/<int:pk>/', views.ProfileInfo.as_view(), name='profile-list'),
 ]
