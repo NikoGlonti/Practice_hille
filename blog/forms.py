@@ -28,6 +28,7 @@ class CommentCreate(forms.ModelForm):
 
 
 class ContactUsForm(forms.Form):
+    email = forms.EmailField(required=True)
     text = forms.CharField(max_length=400, help_text="Describe your problem")
 
     def clean(self):

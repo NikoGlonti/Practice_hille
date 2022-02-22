@@ -3,7 +3,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views import generic
@@ -11,6 +13,7 @@ from django.views.decorators.cache import cache_page
 
 from .forms import RegisterForm, ContactUsForm
 from .models import Comment, Post, User
+from .tasks import contact_us
 
 
 def index(request):
@@ -176,21 +179,21 @@ class ProfileList(generic.ListView):
     template_name = "profile_list.html"
 
 
-class MessageAdmin(SuccessMessageMixin, generic.FormView):
-    form_class = ContactUsForm
-    success_message = 'Message send'
-    success_url = reverse_lazy('index')
-    template_name = 'contact_us.html'
-
-    def form_valid(self, form):
-        data = form.cleaned_data
-        send_mail('MESSAGE',
-                  data['text'],
-                  'admin@gmail.com',
-                  ['problem@gmail.com'],
-                  fail_silently=False,
-                  )
-        return super(MessageAdmin, self).form_valid(form)
+# class MessageAdmin(SuccessMessageMixin, generic.FormView):
+#     form_class = ContactUsForm
+#     success_message = 'Message send'
+#     success_url = reverse_lazy('index')
+#     template_name = 'contact_us.html'
+#
+#     def form_valid(self, form):
+#         data = form.cleaned_data
+#         send_mail('MESSAGE',
+#                   data['text'],
+#                   'admin@gmail.com',
+#                   ['problem@gmail.com'],
+#                   fail_silently=False,
+#                   )
+#         return super(MessageAdmin, self).form_valid(form)
 
 
 class BloggerPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
@@ -199,3 +202,34 @@ class BloggerPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
 
     def get_success_url(self):
         return reverse('index')
+
+
+class ContactUsFormView(SuccessMessageMixin, generic.FormView):
+    form_class = ContactUsForm
+    success_message = 'Thank you for your feedback'
+    data = dict()
+
+    def get_initial(self):
+        if self.request.user.is_anonymous:
+            return {
+                'email': ''
+            }
+        else:
+            return {
+                'email': self.request.user.email
+            }
+
+    def get(self, request, *args, **kwargs):
+        form = ContactUsForm(initial=self.get_initial())
+        context = {'form': form}
+        self.data['html_form'] = render_to_string('contact_us.html', context, request=request)
+        return JsonResponse(self.data)
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        self.data['form_is_valid'] = True
+        contact_us.delay(
+            email=form.cleaned_data.get('email'),
+            text=form.cleaned_data.get('text')
+        )
+        return JsonResponse(self.data)

@@ -1,12 +1,20 @@
-{% extends 'base_generic.html' %}
+<form action="{% url 'contact-us' %}" method="post" class="contact-us-form">
+    {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title">Contact Us</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+              {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                </div>
+              {% endfor %}
 
-{% block content %}
-    <p>Write to us:</p>
-    <form action="" method="post">
-        <table>
-            {% csrf_token %}
-            {{ form.as_p }}
-        </table>
-        <input type="submit" value="Submit">
-    </form>
-{% endblock %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Send</button>
+      </div>
+</form>
